@@ -145,17 +145,19 @@ class ArtifMethod:
         self.artif = sum(1 for i in self.signs if i == False)
         for i in range(self.sz_coeffs):
             for j in range(self.artif):
-                if i == j:
-                    self.table[i].append(1)
-                else:
-                    self.table[i].append(0)
+                self.table[i].append(0)
+        ind = 0
+        for i in range(len(self.signs)):
+            if not self.signs[i]:
+                self.table[i][self.sz_coeffs + self.sz_aim + ind] = 1
+                ind += 1
         self.size += self.artif
 
     def show_table(self):
         print(f'\n{self.count} итерация:')
         self.count += 1
         indent = max(max([len(Instr.to_str(y)) for y in x + self.free_members + self.delts + self.tetas])
-                     for x in self.table) + 1
+                     for x in self.table) + 2
 
         out = "Cj" + (indent - 2) * " "  + (indent) * " "
         for elem in self.aim:
