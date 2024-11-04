@@ -14,6 +14,7 @@ class ArtifMethod:
         self.table = table
         self.signs = signs
         self.free_members = free_members
+        self.show_task()
 
     def solve(self):
         self.is_solve = False
@@ -22,6 +23,9 @@ class ArtifMethod:
         self.aim = self.create_aim()
         self.cur_basis = self.create_basis()
         self.delts = self.calc_delts()
+        if not self.is_max and all(x for x in self.signs):
+             self.all_zero()
+             return
         self.tetas = self.calc_tetas()
         self.count = 0
         self.show_table()
@@ -43,13 +47,23 @@ class ArtifMethod:
         else:
             print("\nЗадача нерешаема")
         self.end()
+        
+    def create_ans(self):
+        answer = [0 for i in range(self.size)]
+        for i in range(self.sz_coeffs):
+            answer[self.cur_basis[i] - 1] = self.free_members[i]
+        answer = [Instr.to_str(x) for x in answer]
+        return answer
+        
+    def all_zero(self):
+        answer = self.create_ans()
+        print(f'\nОптимальное решение:\n F = {Instr.to_str(self.answer)} \n({" ".join(answer)})')
     
     def end(self):
-        if self.is_correct():
-            answer = [0 for i in range(self.size)]
-            for i in range(self.sz_coeffs):
-                answer[self.cur_basis[i] - 1] = self.free_members[i]
-            answer = [Instr.to_str(x) for x in answer]
+        if any(self.cur_basis[i] in range(self.sz_aim + self.sz_coeffs + 1, self.size + 1) for i in range(len(self.cur_basis))):
+            print("\nТ.к. в оптимальном решении присутствует искусственная переменная, то задача не решаема\n")
+        elif self.is_correct():
+            answer = self.create_ans()
             print(f'\nОптимальное решение:\n F = {Instr.to_str(self.answer)} \n({" ".join(answer)})')
     
     def create_aim(self):
@@ -59,7 +73,6 @@ class ArtifMethod:
         else:
             aim += [self.infty] * self.artif
         return aim
-        
     
     def create_basis(self):
         basis = []
@@ -152,6 +165,17 @@ class ArtifMethod:
                 self.table[i][self.sz_coeffs + self.sz_aim + ind] = 1
                 ind += 1
         self.size += self.artif
+        
+    def show_task(self):
+        aim = [str(self.aim[i]) + "x" + Instr.to_down_index(i + 1) + " +" for i in range(self.sz_aim)]
+        print("\n Математическая модель задачи")
+        print(f' F = {" ".join(aim)[:-1]}')
+        for i in range(self.sz_coeffs):
+            s = " ".join([["+ ", "- "][self.table[i][x] < 0] + Instr.to_str(self.table[i][x]) + "x" + Instr.to_down_index(x + 1) for x in range(len(self.table[i]))])
+            s += [" >= ", " <= "][self.signs[i]]
+            s += Instr.to_str(self.free_members[i])
+            print(s[1:])
+
 
     def show_table(self):
         print(f'\n{self.count} итерация:')
@@ -167,7 +191,7 @@ class ArtifMethod:
 
         out = " " * (indent) + "Bx" + " " * (indent - 2)
         for i in range(self.size + 1):
-            symbol = f'A{i}'
+            symbol = f'A{Instr.to_down_index(i)}'
             out += symbol + " " * (indent + 1 - len(symbol))
         if not self.is_solve:
             out += "θ"
@@ -177,7 +201,7 @@ class ArtifMethod:
 
         for i in range(self.sz_coeffs):
             c = f'{Instr.to_str(self.aim[self.cur_basis[i]])}'
-            b = f'x{Instr.to_str(self.cur_basis[i])}'
+            b = f'x{Instr.to_down_index(int(Instr.to_str(self.cur_basis[i])))}'
             out = c + " " * (indent - len(c)) + b + " " * (indent - len(b))
             for elem in [self.free_members[i], *self.table[i]]:
                 cur = Instr.to_str(elem)
@@ -199,4 +223,4 @@ class ArtifMethod:
         print(out)
 
         if not self.is_solve:
-            print(f"Вводим A{self.mn_delta + 1}, Выводим A{self.cur_basis[self.mn_teta]}")
+            print(f"Вводим A{Instr.to_down_index(self.mn_delta + 1)}, Выводим A{Instr.to_down_index(self.cur_basis[self.mn_teta])}")

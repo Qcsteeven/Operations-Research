@@ -10,3 +10,7 @@ class Instr:
         else:
             out = str(round(number, 3))
         return out
+    
+    @staticmethod
+    def to_down_index(number):
+        return str(["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"][number])
