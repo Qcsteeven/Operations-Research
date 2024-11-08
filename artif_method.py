@@ -116,8 +116,7 @@ class ArtifMethod:
             self.mn_delta = self.delts.index(min([x for x in self.delts if x < 0]))
         else:
             self.mn_delta = self.delts.index(max([x for x in self.delts if x > 0]))
-        direct_vector = [self.table[i][self.mn_delta]
-                         for i in range(self.sz_coeffs)]
+        direct_vector = [self.table[i][self.mn_delta] for i in range(self.sz_coeffs)]
         tetas = []
         for i in range(self.sz_coeffs):
             if direct_vector[i] == 0:
@@ -167,11 +166,11 @@ class ArtifMethod:
         self.size += self.artif
         
     def show_task(self):
-        aim = [str(self.aim[i]) + "x" + Instr.to_down_index(i + 1) + " +" for i in range(self.sz_aim)]
+        aim = [Instr.to_str(self.aim[i]) + "x" + Instr.to_down_index(i + 1) + " +" for i in range(self.sz_aim)]
         print("\n Математическая модель задачи")
-        print(f' F = {" ".join(aim)[:-1]}')
+        print(f' F = {" ".join(aim)[:-1]}-> {["min", "max"][self.is_max]}')
         for i in range(self.sz_coeffs):
-            s = " ".join([["+ ", "- "][self.table[i][x] < 0] + Instr.to_str(self.table[i][x]) + "x" + Instr.to_down_index(x + 1) for x in range(len(self.table[i]))])
+            s = " ".join([["+ ", "- "][self.table[i][x] < 0] + Instr.to_str(abs(self.table[i][x])) + "x" + Instr.to_down_index(x + 1) for x in range(len(self.table[i]))])
             s += [" >= ", " <= "][self.signs[i]]
             s += Instr.to_str(self.free_members[i])
             print(s[1:])

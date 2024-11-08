@@ -13,4 +13,7 @@ class Instr:
     
     @staticmethod
     def to_down_index(number):
-        return str(["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"][number])
+        ret = ""
+        for i in str(number):
+            ret += str(["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"][int(i)])
+        return ret

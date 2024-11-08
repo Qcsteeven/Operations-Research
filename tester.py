@@ -1,7 +1,7 @@
 class Test:
     @classmethod
     def test(cls):
-        start, end = 1, 8
+        start, end = 1, 10
         case = int(input(f"Какой тест({start} - {end}): "))
         while True:
             match case:
@@ -77,7 +77,24 @@ class Test:
                     signs = [True, True]
                     free_members = [2, 5]
                     return is_max, sz_aim, coefficients, sz_coeffs, table, signs, free_members
+                case 9:
+                    is_max = False
+                    coefficients = [168, 180, 144]
+                    sz_aim = len(coefficients)
+                    sz_coeffs = 2
+                    table = [[10, 5, 6], [8, 10, 12]]
+                    signs = [False, False]
+                    free_members = [14, 18]
+                    return is_max, sz_aim, coefficients, sz_coeffs, table, signs, free_members
+                case 10:
+                    is_max = False
+                    coefficients = [1, 10, 100, 1000, 10000]
+                    sz_aim = len(coefficients)
+                    sz_coeffs = 5
+                    table = [[1, 2, 3, 4, 5], [5, 6, 7, 8, 9], [9, 10, 11, 12, 13], [13, 14, 15, 16, 17], [17, 18, 19, 20, 21]]
+                    signs = [False, True, False, True, False]
+                    free_members = [2, 4, 8, 16, 32]
+                    return is_max, sz_aim, coefficients, sz_coeffs, table, signs, free_members
                 case _:
-                    print(f"Неверный ввод! Введите число от {
-                          start} до {end}: ")
+                    print(f"Неверный ввод! Введите число от {start} до {end}: ")
                     case = input(f"Какой тест({start} - {end}): ")
