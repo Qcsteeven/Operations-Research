@@ -92,9 +92,9 @@ class Test:
                     sz_aim = len(coefficients)
                     sz_coeffs = 5
                     table = [[1, 2, 3, 4, 5], [5, 6, 7, 8, 9], [9, 10, 11, 12, 13], [13, 14, 15, 16, 17], [17, 18, 19, 20, 21]]
-                    signs = [False, True, False, True, False]
+                    signs = [True, False, False, False, True]
                     free_members = [2, 4, 8, 16, 32]
                     return is_max, sz_aim, coefficients, sz_coeffs, table, signs, free_members
                 case _:
                     print(f"Неверный ввод! Введите число от {start} до {end}: ")
-                    case = input(f"Какой тест({start} - {end}): ")
+                    case = int(input(f"Какой тест({start} - {end}): "))
