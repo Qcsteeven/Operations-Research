@@ -29,6 +29,8 @@ class Fogel:
                 matrix_t[i].append(matrix[j][i])
         difs_a = [[] for _ in range(m)]
         difs_b = [[] for _ in range(n)]
+        self.difs_a = difs_a
+        self.difs_b = difs_b
         basis = []
         
         while True:
@@ -113,7 +115,8 @@ class Fogel:
                 matrix[i_o][j_o].qua = max(self.a[i_o][-1], self.b[j_o][-1])
                 if self.a[i_o][-1] > 0:
                     self.append(0)
-                break
+
+
             elif self.a[i_o][-1] < self.b[j_o][-1]:
                 matrix[i_o][j_o].qua = self.a[i_o][-1]
                 self.a[i_o].append(0)
@@ -128,20 +131,53 @@ class Fogel:
                     if not matrix_t[j_o][i].is_base:
                         matrix_t[j_o][i].qua = -1
             else:
-
                 for i in range(n):
                     if not matrix[i_o][i].is_base:
                         matrix[i_o][i].qua = -1
-            print()
-        self.difs_a = difs_a
-        self.difs_b = difs_b
-        self.plan = matrix
+            
+            cnt1 = 0
+            for i in range(m):
+                if self.a[i][-1] != 0:
+                    cnt1 += 1
+                
+            cnt2 = 0
+            for j in range(n):
+                if self.b[j][-1] != 0:
+                    cnt2 += 1
+            
+            if cnt1 == 1 and cnt2 ==1:
+                ind_i, ind_j = 0, 0
+                for i in range(m):
+                    if self.a[i][-1] != 0:
+                        ind_i = i
+                for j in range(n):
+                    if self.b[j][-1] != 0:
+                        ind_j = j 
+                matrix[ind_i][ind_j].is_base = True
+                matrix[ind_i][ind_j].qua = self.a[ind_i][-1]
+                self.a[ind_i].append(0)
+                self.b[ind_j].append(0)
+            
+            flag = True
+            for i in range(m):
+                flag &= self.a[i][-1] == 0
+            for j in range(n):
+                flag &= self.b[j][-1] == 0
+            
+            
+            
+            if flag:
+                break
+            self.plan = matrix
+            self.show()
+            input()
+                        
+        
         return self.plan
 
     def show(self):
         indent = 25
         out = indent * " "
-        print(self.b)
         for j in range(len(self.b)):
             symbol = f'B{Instr.to_down_index(j + 1)} = {" | ".join([Instr.to_str(x) for x in self.b[j]])}'
             out += symbol + " " * (indent + 1 - len(symbol))
@@ -162,6 +198,20 @@ class Fogel:
             indent = 10
             for j in range(len(self.difs_a[i])):
                 cur = self.difs_a[i][j]
+                if isinstance(cur, int):
+                    cur = Instr.to_str(cur)
+                
+                out += cur + " " * (indent + 1 - len(cur))
+            print(out)
+        
+       
+                
+
+        for i in range(len(self.difs_b[i])):
+            indent = 25
+            out = (indent + 1) * " "
+            for j in range(len(self.difs_b)):
+                cur = self.difs_b[j][i]
                 if isinstance(cur, int):
                     cur = Instr.to_str(cur)
                 
