@@ -1,12 +1,14 @@
 from artif_method import ArtifMethod
-
+from transport_task import Transport
 
 class Solution:
-    def __init__(self, is_max, *args):
-        self.__is_max = is_max
+    def __init__(self, *args):
         self.args = args
 
-    def __call__(self):
+    def __call__(self, task):
         solution = None
-        solution = ArtifMethod(self.__is_max, *self.args)
+        if task == 1:
+            solution = ArtifMethod(*self.args)
+        else:
+            solution = Transport(*self.args)
         solution.solve()
