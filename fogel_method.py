@@ -151,7 +151,7 @@ class Fogel:
         return self.plan
 
     def show(self):
-        indent = 25
+        indent = 27
         out = indent * " "
         for j in range(len(self.b)):
             symbol = f'B{Instr.to_down_index(j + 1)} = {" | ".join([Instr.to_str(x) for x in self.b[j]])}'
@@ -159,7 +159,7 @@ class Fogel:
         print(out)
         
         for i in range(len(self.a)):
-            indent = 25
+            indent = 27
             out = ""
             symbol = f'A{Instr.to_down_index(i + 1)} = {" | ".join([Instr.to_str(x) for x in self.a[i]])}'
             out += symbol + " " * (indent + 1 - len(symbol))
@@ -170,7 +170,7 @@ class Fogel:
                 else:
                     cur += "0"
                 out += cur + " " * (indent + 1 - len(cur))
-            indent = 10
+            indent = 5
             for j in range(len(self.difs_a[i])):
                 cur = self.difs_a[i][j]
                 if isinstance(cur, int):
@@ -183,7 +183,7 @@ class Fogel:
                 
 
         for i in range(len(self.difs_b[i])):
-            indent = 25
+            indent = 27
             out = (indent + 1) * " "
             for j in range(len(self.difs_b)):
                 cur = self.difs_b[j][i]
