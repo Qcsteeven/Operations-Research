@@ -39,7 +39,7 @@ class Fogel:
                 cur = []
                 for j in range(n):
                     if matrix[i][j].qua != -1 and not matrix[i][j].is_base:
-                        if matrix[i][j].tariff > 0:
+                        if matrix[i][j].tariff >= 0:
                             cur.append(matrix[i][j].tariff)
                 cur.sort()
                 if cur:
@@ -54,7 +54,8 @@ class Fogel:
                 cur = []
                 for j in range(m):
                     if matrix_t[i][j].qua != -1 and not matrix_t[i][j].is_base:
-                        cur.append(matrix_t[i][j].tariff)
+                        if matrix_t[i][j].tariff >= 0:
+                            cur.append(matrix_t[i][j].tariff)
                 cur.sort()
                 if cur:
                     if len(cur) == 1:
@@ -113,10 +114,8 @@ class Fogel:
             basis.append(matrix[i_o][j_o])
             if self.a[i_o][-1] == 0 or self.b[j_o][-1] == 0:
                 matrix[i_o][j_o].qua = max(self.a[i_o][-1], self.b[j_o][-1])
-                if self.a[i_o][-1] > 0:
-                    self.append(0)
-
-
+                self.a[i_o].append(0)
+                self.b[j_o].append(0)
             elif self.a[i_o][-1] < self.b[j_o][-1]:
                 matrix[i_o][j_o].qua = self.a[i_o][-1]
                 self.a[i_o].append(0)
@@ -126,37 +125,16 @@ class Fogel:
                 self.b[j_o].append(0)
                 self.a[i_o].append(self.a[i_o][-1] - matrix[i_o][j_o].qua)
             
-            if cur_elem[4] == "col":
-                for i in range(m):
-                    if not matrix_t[j_o][i].is_base:
-                        matrix_t[j_o][i].qua = -1
-            else:
+            
+            if self.a[i_o][-1] == 0:
                 for i in range(n):
                     if not matrix[i_o][i].is_base:
                         matrix[i_o][i].qua = -1
             
-            cnt1 = 0
-            for i in range(m):
-                if self.a[i][-1] != 0:
-                    cnt1 += 1
-                
-            cnt2 = 0
-            for j in range(n):
-                if self.b[j][-1] != 0:
-                    cnt2 += 1
-            
-            if cnt1 == 1 and cnt2 ==1:
-                ind_i, ind_j = 0, 0
+            if self.b[j_o][-1] == 0:
                 for i in range(m):
-                    if self.a[i][-1] != 0:
-                        ind_i = i
-                for j in range(n):
-                    if self.b[j][-1] != 0:
-                        ind_j = j 
-                matrix[ind_i][ind_j].is_base = True
-                matrix[ind_i][ind_j].qua = self.a[ind_i][-1]
-                self.a[ind_i].append(0)
-                self.b[ind_j].append(0)
+                    if not matrix_t[j_o][i].is_base:
+                        matrix_t[j_o][i].qua = -1
             
             flag = True
             for i in range(m):
@@ -165,12 +143,9 @@ class Fogel:
                 flag &= self.b[j][-1] == 0
             
             
-            
             if flag:
                 break
             self.plan = matrix
-            self.show()
-            input()
                         
         
         return self.plan
