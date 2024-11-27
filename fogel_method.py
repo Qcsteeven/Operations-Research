@@ -31,7 +31,7 @@ class Fogel:
         difs_b = [[] for _ in range(n)]
         self.difs_a = difs_a
         self.difs_b = difs_b
-        basis = []
+        self.basis = []
         
         while True:
         
@@ -111,7 +111,7 @@ class Fogel:
             
             i_o, j_o = cur_elem[2], cur_elem[3]
             matrix[i_o][j_o].is_base = True
-            basis.append(matrix[i_o][j_o])
+            self.basis.append([matrix[i_o][j_o], (i_o, j_o)])
             if self.a[i_o][-1] == 0 or self.b[j_o][-1] == 0:
                 matrix[i_o][j_o].qua = max(self.a[i_o][-1], self.b[j_o][-1])
                 self.a[i_o].append(0)
@@ -142,15 +142,17 @@ class Fogel:
             for j in range(n):
                 flag &= self.b[j][-1] == 0
             
-            
+            self.plan = matrix
             if flag:
                 break
-            self.plan = matrix
-                        
-        
+            
         return self.plan
 
+    def get_basis(self):
+        return self.basis
+
     def show(self):
+        print("Опорный план методом Фогеля:")
         indent = 27
         out = indent * " "
         for j in range(len(self.b)):

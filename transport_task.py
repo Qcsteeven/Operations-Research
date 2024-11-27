@@ -13,10 +13,27 @@ class Transport:
 
     def solve(self):
         self.build_math_model()
-        
-        method = Fogel()
-        basic_plan = method.create(self.m, self.a, self.n, self.b, self.matrix)
-        method.show()
+        self.method = Fogel()
+        self.matrix = self.method.create(self.m, self.a, self.n, self.b, self.matrix)
+        self.method.show()
+        self.is_optimal()
+
+    def is_optimal(self):
+        v = [None for _ in range(self.n)]
+        u = [None for _ in range(self.m)]
+        u[0] = 0
+        basis = self.method.get_basis()
+        for i in range(len(basis)):
+            print(basis[i][0].tariff, basis[i][0].qua, basis[i][0].is_base, basis[i][1])
+
+        while any(v[i] is None for i in range(n)) and any(u[i] is None for i in range(m)):
+            for x in range(len(basis)):
+                tariff, qua, is_base, i, j = basis[i][0].tariff, basis[i][0].qua, basis[i][0].is_base, basis[i][1]
+                if (not u[i] is None) and (v[j] is None):
+                    v[j] = tariff + u[i]
+                elif (u[i] is None) and (not v[j] is None):
+                    u[i] = v[j] - tariff
+            
 
     def build_math_model(self):
         print()
