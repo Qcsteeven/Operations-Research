@@ -100,7 +100,7 @@ class Test:
                         print(f"Неверный ввод! Введите число от {start} до {end}: ")
                         case = int(input(f"Какой тест({start} - {end}): "))
         else:
-            start, end = 1, 3
+            start, end = 1, 5
             case = int(input(f"Какой тест({start} - {end}): "))
             while True:
                 match case:
@@ -138,6 +138,15 @@ class Test:
                             [6, 4, 1, 5],
                             [3, 8, 7, 3],
                             [4, 6, 8, 2],
+                        ]
+                        return len(a), a, len(b), b, matrix
+                    case 5:
+                        a = [220, 420, 320]
+                        b = [220, 220, 420, 220]
+                        matrix = [
+                            [60, 52, 56, 40],
+                            [80, 32, 28, 12],
+                            [40, 72, 80, 48],
                         ]
                         return len(a), a, len(b), b, matrix
                         

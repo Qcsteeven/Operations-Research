@@ -145,15 +145,66 @@ class Fogel:
             self.plan = matrix
             if flag:
                 break
-            
-        return self.plan
+        
+        self.matrix = matrix
+        if len(self.basis) != m + n - 1:
+            cnt = m + n - 1 - len(self.basis)
+            new_vars = []
+            end_flag = False
+            for idx_i in range(m):
+                if end_flag:
+                    break
+                for idx_j in range(n):
+                    if self.matrix[idx_i][idx_j].is_base:
+                        continue
+                    self.idx_min = (idx_i, idx_j)
+                    rows = [True for _ in range(m)]
+                    cols = [True for _ in range(n)]
+                    flag = True
+                    while flag and (any(x for x in rows) and any(x for x in cols)):
+                        flag = False
+                        for i in range(m):
+                            cnt1 = 0
+                            if rows[i]:
+                                for j in range(n):
+                                    if cols[j] and self.matrix[i][j].is_base or (i, j) == self.idx_min:
+                                        cnt1 += 1
+                                if cnt1 <= 1 and i != self.idx_min[0]:
+                                    rows[i] = False
+                                    flag = True
+                        
+                        for j in range(n):
+                            cnt2 = 0
+                            if cols[j]:
+                                for i in range(m):
+                                    if rows[i] and self.matrix[i][j].is_base or (i, j) == self.idx_min:
+                                        cnt2 += 1
+                                if cnt2 <= 1 and j != self.idx_min[1]:
+                                    cols[j] = False
+                                    flag = True
 
-    def get_basis(self):
-        return self.basis
+                    cycle = []
+                    for i in range(m):
+                        for j in range(n):
+                            if rows[i] and cols[j]:
+                                cycle.append((i, j))
+                    cycle.pop()
+                    if not cycle:
+                        new_vars.append((idx_i, idx_j))
+                        cnt -= 1
+                        if cnt == 0:
+                            end_flag = True
+                            break
+            for z in new_vars:
+                i, j = z
+                self.matrix[i][j].qua = 0
+                self.matrix[i][j].is_base = True
+        self.plan = self.matrix
+        return self.plan
 
     def show(self):
         print("Опорный план методом Фогеля:")
-        indent = 27
+        indent = 30
         out = indent * " "
         for j in range(len(self.b)):
             symbol = f'B{Instr.to_down_index(j + 1)} = {" | ".join([Instr.to_str(x) for x in self.b[j]])}'
@@ -161,7 +212,7 @@ class Fogel:
         print(out)
         
         for i in range(len(self.a)):
-            indent = 27
+            indent = 30
             out = ""
             symbol = f'A{Instr.to_down_index(i + 1)} = {" | ".join([Instr.to_str(x) for x in self.a[i]])}'
             out += symbol + " " * (indent + 1 - len(symbol))
@@ -180,12 +231,9 @@ class Fogel:
                 
                 out += cur + " " * (indent + 1 - len(cur))
             print(out)
-        
        
-                
-
         for i in range(len(self.difs_b[i])):
-            indent = 27
+            indent = 30
             out = (indent + 1) * " "
             for j in range(len(self.difs_b)):
                 cur = self.difs_b[j][i]

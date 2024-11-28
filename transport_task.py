@@ -21,14 +21,36 @@ class Transport:
         
         while not self.is_optimal():
             self.count += 1
-            self.build_cycle()
+            self.cycle = self.build_cycle()
+            self.recalculation()
             self.show()
             print(f"{self.count} итерация:")
             
         print("Оптимальный план:")
         self.show()
         
-    
+    def recalculation(self):
+        self.matrix[self.idx_min[0]][self.idx_min[1]].is_base = True
+        self.matrix[self.idx_min[0]][self.idx_min[1]].qua = 0
+        signs = []
+        for i in range(len(self.cycle)):
+            if i % 2 == 0: signs += ["+"]
+            else: signs += ["-"]
+        mn = float("inf")
+        mn_idx = None
+        for idx in range(len(self.cycle)):
+            i, j = self.cycle[idx]
+            if signs[idx] == "-":
+                if self.matrix[i][j].qua < mn:
+                    mn = self.matrix[i][j].qua
+                    mn_idx = i, j
+        self.matrix[mn_idx[0]][mn_idx[1]].is_base = False 
+        for idx in range(len(self.cycle)):
+            i, j = self.cycle[idx]
+            if signs[idx] == "-":
+                self.matrix[i][j].qua -= mn
+            else:
+                self.matrix[i][j].qua += mn
         
     def build_cycle(self):
         rows = [True for _ in range(self.m)]
@@ -59,13 +81,8 @@ class Transport:
         cycle = []
         for i in range(self.m):
             for j in range(self.n):
-                if rows[i] and cols[j]:
+                if rows[i] and cols[j] and self.matrix[i][j].is_base or (i, j) == self.idx_min:
                     cycle.append((i, j))
-        
-        signs = []
-        for i in range(len(cycle)):
-            if i % 2 == 0: signs += ["+"]
-            else: signs += ["-"]
         
         vector_cycle = [self.idx_min]
         cycle.remove(self.idx_min)
@@ -89,6 +106,8 @@ class Transport:
                         if cur_diff > dif:
                             dif = cur_diff
                             nxt = elem
+            if nxt == vector_cycle[0]:
+                break
             cycle.remove(nxt)
             vector_cycle.append(nxt)
             direction = not direction
@@ -100,7 +119,11 @@ class Transport:
         v = [None for _ in range(self.n)]
         u = [None for _ in range(self.m)]
         u[0] = 0
-        basis = self.method.get_basis()
+        basis = []
+        for i in range(self.m):
+            for j in range(self.n):
+                if self.matrix[i][j].is_base:
+                    basis.append([self.matrix[i][j], (i, j)])
 
         while any(v[i] is None for i in range(self.n)) or any(u[i] is None for i in range(self.m)):
             for x in range(len(basis)):
@@ -237,5 +260,3 @@ class Transport:
                     aim += self.matrix[i][j].qua * self.matrix[i][j].tariff
         
         print(f"Значение целевой функции: {aim}")
-        input()
-       
