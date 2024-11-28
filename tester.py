@@ -131,4 +131,13 @@ class Test:
                             [20, 4, 4, 10]
                         ]
                         return len(a), a, len(b), b, matrix
+                    case 4:
+                        a = [20, 30, 50]
+                        b = [30, 20, 40, 10]
+                        matrix = [
+                            [6, 4, 1, 5],
+                            [3, 8, 7, 3],
+                            [4, 6, 8, 2],
+                        ]
+                        return len(a), a, len(b), b, matrix
                         

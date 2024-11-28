@@ -21,10 +21,80 @@ class Transport:
         
         while not self.is_optimal():
             self.count += 1
+            self.build_cycle()
             self.show()
             print(f"{self.count} итерация:")
+            
         print("Оптимальный план:")
         self.show()
+        
+    
+        
+    def build_cycle(self):
+        rows = [True for _ in range(self.m)]
+        cols = [True for _ in range(self.n)]
+        flag = True
+        while flag and (any(x for x in rows) and any(x for x in cols)):
+            flag = False
+            for i in range(self.m):
+                cnt1 = 0
+                if rows[i]:
+                    for j in range(self.n):
+                        if cols[j] and self.matrix[i][j].is_base or (i, j) == self.idx_min:
+                            cnt1 += 1
+                    if cnt1 <= 1 and i != self.idx_min[0]:
+                        rows[i] = False
+                        flag = True
+            
+            for j in range(self.n):
+                cnt2 = 0
+                if cols[j]:
+                    for i in range(self.m):
+                        if rows[i] and self.matrix[i][j].is_base or (i, j) == self.idx_min:
+                            cnt2 += 1
+                    if cnt2 <= 1 and j != self.idx_min[1]:
+                        cols[j] = False
+                        flag = True
+
+        cycle = []
+        for i in range(self.m):
+            for j in range(self.n):
+                if rows[i] and cols[j]:
+                    cycle.append((i, j))
+        
+        signs = []
+        for i in range(len(cycle)):
+            if i % 2 == 0: signs += ["+"]
+            else: signs += ["-"]
+        
+        vector_cycle = [self.idx_min]
+        cycle.remove(self.idx_min)
+        cur = self.idx_min
+        direction = True
+        while cycle:
+            if direction: cnst = cur[0]
+            else: cnst = cur[1]
+            nxt = None
+            dif = 0
+            for elem in cycle:
+                if direction:
+                    if elem[0] == cnst:
+                        cur_diff = abs(elem[1] - cur[1])
+                        if cur_diff > dif:
+                            dif = cur_diff
+                            nxt = elem
+                else:
+                    if elem[1] == cnst:
+                        cur_diff = abs(elem[0] - cur[0])
+                        if cur_diff > dif:
+                            dif = cur_diff
+                            nxt = elem
+            cycle.remove(nxt)
+            vector_cycle.append(nxt)
+            direction = not direction
+            cur = nxt
+        return vector_cycle
+            
 
     def is_optimal(self):
         v = [None for _ in range(self.n)]
@@ -121,8 +191,6 @@ class Transport:
                     out += f"x{Instr.to_down_index(i + 1)}{Instr.to_down_index(j + 1)} + "
             out += f" = {self.b[j]}"
             print(out)
-        
-        
 
     def show_start(self):
         indent = max([max(max([len(Instr.to_str(x)) + 4 for x in self.matrix[i]]) for i in range(self.m)), 9])
@@ -162,4 +230,12 @@ class Transport:
                 out += cur + " " * (indent + 1 - len(cur))
             print(out)
         
+        aim = 0
+        for i in range(self.m):
+            for j in range(self.n):
+                if self.matrix[i][j].is_base:
+                    aim += self.matrix[i][j].qua * self.matrix[i][j].tariff
+        
+        print(f"Значение целевой функции: {aim}")
+        input()
        
