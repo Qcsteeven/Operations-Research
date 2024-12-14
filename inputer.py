@@ -1,7 +1,7 @@
 class Input:
     @classmethod
     def input(cls, task):
-        if task == 1:
+        if task in (1, 3):
             is_max = input(
                 "Задача на поиск максимума или минимума? (max/min):\n")
             is_max = True if is_max == "max" else False
