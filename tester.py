@@ -108,7 +108,7 @@ class Test:
                     case _:
                         print(f"Неверный ввод! Введите число от {start} до {end}: ")
                         case = int(input(f"Какой тест({start} - {end}): "))
-        else:
+        elif task == 2:
             start, end = 1, 5
             case = int(input(f"Какой тест({start} - {end}): "))
             while True:
@@ -158,4 +158,26 @@ class Test:
                             [40, 72, 80, 48],
                         ]
                         return len(a), a, len(b), b, matrix
-                        
+        else:
+            start, end = 1, 2
+            case = int(input(f"Какой тест({start} - {end}): "))
+            while True:
+                match case:
+                    case 1:
+                        cnt_products = 2
+                        cnt_ventures = 5
+                        matrix = [[100, 400, 20, 200, 600],
+                                  [15, 200, 2.5, 50, 250]]
+                        products = [2, 1]
+                        ventures = [5, 3, 40, 9, 2]
+                        return cnt_products, cnt_ventures, matrix, products, ventures
+                    case 2:
+                        cnt_products = 3
+                        cnt_ventures = 5
+                        matrix = [[100, 400, 20, 200, 600],
+                                  [15, 200, 25, 50, 250],
+                                  [100, 150, 200, 25, 350]]
+                        products = [2, 1, 3]
+                        ventures = [5, 3, 40, 9, 2]
+                        return cnt_products, cnt_ventures, matrix, products, ventures
+                    

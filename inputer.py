@@ -20,7 +20,7 @@ class Input:
                 signs.append(elem[-2] == "<=")
                 free_members.append(float(elem[-1]))
             return is_max, sz_aim, coefficients, sz_coeffs, table, signs, free_members
-        else:
+        elif task == 2:
             m = int(input("Кол-во поставщиков: "))
             a = [int(x) for x in input(
                 "Введите товары у поставщиков в формате 1 2 3:  ").split()]
@@ -31,3 +31,12 @@ class Input:
             matrix = [[int(x) for x in input(
                 f"{i + 1} строка: ").split()] for i in range(m)]
             return m, a, n, b, matrix
+        else:
+            cnt_products = int(input("Кол-во видов изделий: "))
+            cnt_ventures = int(input("Кол-во видов предприятий: "))
+            print("Ввод матрицы производительности:")
+            matrix = [[int(x) for x in input(
+                f"Вектор {i + 1} изделия: ").split()] for i in range(cnt_products)]
+            products = [int(x) for x in input("Вектор числа изделий в каждом комплекте").split()]
+            ventures = [int(x) for x in input("Вектор числа предприятий в каждого вида").split()]
+            return cnt_products, cnt_ventures, matrix, products, ventures
