@@ -2,6 +2,7 @@ from instruments import Instr
 from tabulate import tabulate
 from copy import deepcopy
 
+
 class OptimumUsing:
     def __init__(self, cnt_products, cnt_ventures, matrix, products, ventures):
         self.cnt_products = cnt_products
@@ -10,7 +11,7 @@ class OptimumUsing:
         self.products = products
         self.ventures = ventures
         self.plan = matrix
-        
+
         # Заполнение жордановой таблицы
         self.table = [[0 for i in range(
             cnt_ventures * (cnt_products) + 2)] for _ in range(cnt_ventures + cnt_products + 1)]
@@ -20,20 +21,21 @@ class OptimumUsing:
             for j in range(cnt_ventures):
                 self.table[i][j + cnt] = -matrix[i][j]
             cnt += cnt_ventures
-            
+
         for i in range(cnt_products):
             self.table[i][cnt_ventures * cnt_products] = products[i]
-        
+
         for k in range(cnt_products):
             for i in range(cnt_products, cnt_products + cnt_ventures):
                 for j in range(cnt_ventures):
                     if (i - cnt_products) == j:
                         self.table[i][j + k * cnt_ventures] = 1
-                        
+
         for i in range(cnt_ventures):
             self.table[cnt_products + i][-1] = ventures[i]
-            
-        self.table[cnt_products + cnt_ventures][cnt_products * cnt_ventures] = -1
+
+        self.table[cnt_products +
+                   cnt_ventures][cnt_products * cnt_ventures] = -1
 
         self.basis = []
         self.not_basis = []
@@ -43,13 +45,12 @@ class OptimumUsing:
         for i in range(cnt_ventures):
             self.basis.append(f"0")
         self.basis.append("z")
-        
+
         for i in range(cnt_products):
             for j in range(cnt_ventures):
                 self.not_basis.append(f"x{j + 1}{i + 1}")
         self.not_basis.append("ξ")
         self.not_basis.append("1")
-        
 
     def solve(self):
         print("Начальная жордановая таблица:")
@@ -70,7 +71,7 @@ class OptimumUsing:
             for i in range(len(self.table)):
                 self.table[i] = self.table[i][1:]
             self.show()
-        
+
         free = []
         for i in range(len(self.table)):
             free.append(self.table[i][-1])
@@ -83,20 +84,23 @@ class OptimumUsing:
                     else:
                         self.mje(*self.find())
                         break
-                        
+
         cnt = 1
         while any(x < 0 for x in self.table[-1]):
             print(f"{cnt} итерация решения:")
             cnt += 1
+            row, col = self.find()
             # Запуск метода модифицированных жордановых исключений
-            self.mje(*self.find())
+            self.mje(row, col)
             self.basis[row], self.not_basis[col] = self.not_basis[col], self.basis[row]
             self.show()
-        
+
         print(f"Оптимальное решение:")
         print(f"z = {self.table[-1][-1]}")
-        solution = [(self.basis[i], self.table[i][-1]) for i in range(len(self.basis) - 1)]
-        solution += [(self.not_basis[i], 0) for i in range(len(self.not_basis) - 1)]
+        solution = [(self.basis[i], self.table[i][-1])
+                    for i in range(len(self.basis) - 1)]
+        solution += [(self.not_basis[i], 0)
+                     for i in range(len(self.not_basis) - 1)]
         for i in range(len(solution)):
             if solution[i][0][0] == "x":
                 print(f"{solution[i][0]} = {round(solution[i][1], 4)}")
@@ -115,17 +119,17 @@ class OptimumUsing:
                 mn = div
                 row = i
         return row, col
-    
+
     def mje(self, row, col):
         per_elem = self.table[row][col]
-        
+
         table = deepcopy(self.table)
-        
+
         # 1) Разрешающий элемент заменяется единицей
         table[row][col] = 1
 
         # 2) Остальные элементы (кроме разрешающего) элементы разрешающей строки остаются без изменений
-            
+
         # 3) Остальные элементы разрешающего столбца меняют лишь свои знаки
         for i in range(len(self.table)):
             if i != row:
@@ -135,13 +139,14 @@ class OptimumUsing:
         for i in range(len(self.table)):
             for j in range(len(self.table[i])):
                 if i != row and j != col:
-                    table[i][j] = self.table[i][j] * per_elem - self.table[i][col] * self.table[row][j]            
+                    table[i][j] = self.table[i][j] * per_elem - \
+                        self.table[i][col] * self.table[row][j]
 
         # 5) Все элементы новой таблицы делятся на разрешающий элемент
         for i in range(len(self.table)):
             for j in range(len(self.table[i])):
                 table[i][j] /= per_elem
-                
+
         self.table = table
 
     def show(self):
@@ -152,4 +157,5 @@ class OptimumUsing:
                 table[i][j] = round(self.table[i][j], 3)
                 if table[i][j] == 0:
                     table[i][j] = 0
-        print(tabulate(table, tablefmt="grid", headers=not_basis, showindex=self.basis))
+        print(tabulate(table, tablefmt="grid",
+              headers=not_basis, showindex=self.basis))
