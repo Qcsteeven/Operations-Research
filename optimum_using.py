@@ -57,7 +57,10 @@ class OptimumUsing:
         cnt = 1
         # Избавление от 0 - строк
         for i in range(self.cnt_ventures):
-            print(f"{cnt} итерация избпавления от 0-строк:")
+            print(f"{cnt} итерация избавления от 0-строк:")
+            if all(x <= 0 for x in self.table[i + self.cnt_products]):
+                print("Система несовместна")
+                return 0
             cnt += 1
             self.basis[i + self.cnt_products] = self.not_basis[0]
             col = 0
@@ -68,26 +71,25 @@ class OptimumUsing:
                 self.table[i] = self.table[i][1:]
             self.show()
         
+        free = []
+        for i in range(len(self.table)):
+            free.append(self.table[i][-1])
+        while any(x < 0 for x in free):
+            for i in range(len(self.table)):
+                if self.table[i][-1] < 0:
+                    if all(x >= 0 for x in self.table[i]):
+                        print("Система несовместна")
+                        return 0
+                    else:
+                        self.mje(*self.find())
+                        break
+                        
         cnt = 1
         while any(x < 0 for x in self.table[-1]):
             print(f"{cnt} итерация решения:")
             cnt += 1
-            
-            # Поиск разрешающего элемента
-            col = self.table[-1].index(min(self.table[-1]))
-            mn = float("inf")
-            row = None
-            for i in range(len(self.table)):
-                cur = self.table[i][col]
-                div = 0
-                if cur > 0:
-                    div = self.table[i][-1] / cur
-                if div >= 0 and div < mn and cur > 0:
-                    mn = div
-                    row = i
-
             # Запуск метода модифицированных жордановых исключений
-            self.mje(row, col)
+            self.mje(*self.find())
             self.basis[row], self.not_basis[col] = self.not_basis[col], self.basis[row]
             self.show()
         
@@ -95,12 +97,25 @@ class OptimumUsing:
         print(f"z = {self.table[-1][-1]}")
         solution = [(self.basis[i], self.table[i][-1]) for i in range(len(self.basis) - 1)]
         solution += [(self.not_basis[i], 0) for i in range(len(self.not_basis) - 1)]
-        solution.sort()
         for i in range(len(solution)):
             if solution[i][0][0] == "x":
-                print(f"{solution[i][0]} = {solution[i][1]}")
+                print(f"{solution[i][0]} = {round(solution[i][1], 4)}")
 
-
+    # Поиск разрешающего элемента
+    def find(self):
+        col = self.table[-1].index(min(self.table[-1]))
+        mn = float("inf")
+        row = None
+        for i in range(len(self.table)):
+            cur = self.table[i][col]
+            div = 0
+            if cur > 0:
+                div = self.table[i][-1] / cur
+            if div >= 0 and div < mn and cur > 0:
+                mn = div
+                row = i
+        return row, col
+    
     def mje(self, row, col):
         per_elem = self.table[row][col]
         
@@ -131,9 +146,10 @@ class OptimumUsing:
 
     def show(self):
         not_basis = ["-" + x for x in self.not_basis[:-1]] + [1]
+        table = deepcopy(self.table)
         for i in range(len(self.table)):
             for j in range(len(self.table[i])):
-                self.table[i][j] = round(self.table[i][j], 3)
-                if self.table[i][j] == 0:
-                    self.table[i][j] = 0
-        print(tabulate(self.table, tablefmt="grid", headers=not_basis, showindex=self.basis))
+                table[i][j] = round(self.table[i][j], 3)
+                if table[i][j] == 0:
+                    table[i][j] = 0
+        print(tabulate(table, tablefmt="grid", headers=not_basis, showindex=self.basis))

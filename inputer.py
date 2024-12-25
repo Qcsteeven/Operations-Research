@@ -38,5 +38,5 @@ class Input:
             matrix = [[int(x) for x in input(
                 f"Вектор {i + 1} изделия: ").split()] for i in range(cnt_products)]
             products = [int(x) for x in input("Вектор числа изделий в каждом комплекте").split()]
-            ventures = [int(x) for x in input("Вектор числа предприятий в каждого вида").split()]
+            ventures = [int(x) for x in input("Вектор числа предприятий  каждого вида").split()]
             return cnt_products, cnt_ventures, matrix, products, ventures
