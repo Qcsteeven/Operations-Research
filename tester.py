@@ -2,7 +2,7 @@ class Test:
     @classmethod
     def test(cls, task):
         if task in (1, 3):
-            start, end = 1, 11
+            start, end = 1, 12
             case = int(input(f"Какой тест({start} - {end}): "))
             while True:
                 match case:
@@ -104,6 +104,22 @@ class Test:
                         table = [[30, 6], [16, 12], [1, 2], [2.5, 7], [1.4, 1]]
                         signs = [True, True, True, True, True]
                         free_members = [2900, 1800, 170, 490, 110]
+                        return is_max, sz_aim, coefficients, sz_coeffs, table, signs, free_members
+                    case 12:
+                        is_max = True
+                        coefficients = [0 for _ in range(15)] + [1]
+                        sz_aim = len(coefficients)
+                        sz_coeffs = 8
+                        table = [[100, 400, 20, 200, 600, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2], 
+                                 [0, 0, 0, 0, 0, 15, 200, 25, 50, 250, 0, 0, 0, 0, 0, -1], 
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 150, 200, 25, 350, -3], 
+                                 [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], 
+                                 [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                                 [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+                                 [0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+                                 [0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0]]
+                        signs = [False, False, False, True, True, True, True, True]
+                        free_members = [0, 0, 0, 5, 3, 40, 9, 2]
                         return is_max, sz_aim, coefficients, sz_coeffs, table, signs, free_members
                     case _:
                         print(f"Неверный ввод! Введите число от {start} до {end}: ")

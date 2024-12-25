@@ -20,6 +20,7 @@ class LinProg(Prog):
 
     def solve(self):
         first_res = linprog(c=self.aim, A_ub=self.table, b_ub=self.free_members, bounds=self.limits, method="highs")
+        print(first_res.fun)
         best_solves = [([first_res.x[i] for i in range(self.sz_aim)], -first_res.fun if self.is_max else first_res.fun)]
         solves = [[self.table, self.free_members]]
         optimum = None
